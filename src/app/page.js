@@ -85,7 +85,7 @@ export default function Home() {
             onClick={createUser}
             className="bg-slate-500 mt-10 px-10 py-2"
           >
-            Create User
+            Create Users
           </button>
         </div>
       </div>
