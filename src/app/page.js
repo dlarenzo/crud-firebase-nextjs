@@ -54,14 +54,17 @@ export default function Home() {
             }}
           />
         </div>
-        <button onClick={createUser} className="bg-slate-500 mt-10 px-10 py-2">
+        <button onClick={createUser} className="bg-slate-500 mt-5 px-10 py-2">
           Create User
         </button>
       </div>
       {users.map((user) => (
-        <div key={user.id}>
-          <h2>{user.name}</h2>
-          <p>{user.age}</p>
+        <div key={user.id} className="mb-10">
+          <div className="flex gap-5">
+            <h1>Name: {user.name}</h1>
+            <h1>Age: {user.age}</h1>
+          </div>
+          <button className="bg-slate-300 mt-2 px-10 py-2">Increase Age</button>
         </div>
       ))}
     </div>
