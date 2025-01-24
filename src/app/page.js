@@ -1,7 +1,12 @@
 "use client";
-import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../firebaseConfig";
 
 export default function Home() {
@@ -24,7 +29,19 @@ export default function Home() {
   // Function to Create User
   const createUser = async () => {
     // Add data to firestore
-    await addDoc(usersCollectionRef, { name: newName, age: newAge });
+    await addDoc(usersCollectionRef, { name: newName, age: Number(newAge) });
+    getUsers(); // Refresh the users list after creating a new user
+    setNewName(""); // Clear the name input field
+    setNewAge(0); // Clear the age input field
+  };
+
+  // Update User Age Increase 1
+  const updateUser = async (id, age) => {
+    const userDoc = doc(db, "users", id);
+    // Create new object with updated age
+    const newFields = { age: age + 1 };
+    // Add data to firestore
+    await updateDoc(userDoc, newFields);
     getUsers(); // Refresh the users list after creating a new user
   };
 
@@ -38,7 +55,7 @@ export default function Home() {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-10">
-        <div className="flex">
+        <div className="flex justify-center items-center text-4xl font-bold">
           <input
             placeholder="Name..."
             onChange={(event) => {
@@ -52,19 +69,28 @@ export default function Home() {
             onChange={(event) => {
               setNewAge(event.target.value);
             }}
+            className=""
           />
+          <button
+            onClick={createUser}
+            className="bg-slate-500 mt-10 px-10 py-2"
+          >
+            Create User
+          </button>
         </div>
-        <button onClick={createUser} className="bg-slate-500 mt-5 px-10 py-2">
-          Create User
-        </button>
       </div>
       {users.map((user) => (
         <div key={user.id} className="mb-10">
-          <div className="flex gap-5">
-            <h1>Name: {user.name}</h1>
-            <h1>Age: {user.age}</h1>
-          </div>
-          <button className="bg-slate-300 mt-2 px-10 py-2">Increase Age</button>
+          <h1>{user.name}</h1>
+          <h1>{user.age}</h1>
+          <button
+            onClick={() => {
+              updateUser(user.id, user.age);
+            }}
+            className="bg-slate-500 mt-5 px-10 py-2"
+          >
+            Increase Age
+          </button>
         </div>
       ))}
     </div>
