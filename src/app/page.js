@@ -6,6 +6,7 @@ import {
   addDoc,
   updateDoc,
   doc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 
@@ -45,6 +46,13 @@ export default function Home() {
     getUsers(); // Refresh the users list after creating a new user
   };
 
+  // Delete User
+  const deleteUser = async (id) => {
+    const userDoc = doc(db, "users", id);
+    await deleteDoc(userDoc);
+    getUsers(); // Refresh the users list after creating a new user
+  };
+
   // Get list of users from database. Called when page renders
   // Make API call to get users
   useEffect(() => {
@@ -58,6 +66,7 @@ export default function Home() {
         <div className="flex justify-center items-center text-4xl font-bold">
           <input
             placeholder="Name..."
+            value={newName}
             onChange={(event) => {
               setNewName(event.target.value);
             }}
@@ -66,6 +75,7 @@ export default function Home() {
           <input
             type="number"
             placeholder="Age..."
+            value={newAge}
             onChange={(event) => {
               setNewAge(event.target.value);
             }}
@@ -81,15 +91,23 @@ export default function Home() {
       </div>
       {users.map((user) => (
         <div key={user.id} className="mb-10">
-          <h1>{user.name}</h1>
-          <h1>{user.age}</h1>
+          <h1>Name: {user.name}</h1>
+          <h1>Age: {user.age}</h1>
           <button
             onClick={() => {
               updateUser(user.id, user.age);
             }}
-            className="bg-slate-500 mt-5 px-10 py-2"
+            className="bg-slate-500 mt-5 px-10 py-2 mr-4"
           >
             Increase Age
+          </button>
+          <button
+            onClick={() => {
+              deleteUser(user.id, user.age);
+            }}
+            className="bg-red-500 mt-5 px-10 py-2"
+          >
+            Delete User
           </button>
         </div>
       ))}
